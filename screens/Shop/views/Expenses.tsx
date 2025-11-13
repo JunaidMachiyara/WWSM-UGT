@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAppContext } from '../../../context/AppContext';
 
@@ -38,8 +39,8 @@ const Expenses: React.FC = () => {
   };
 
   return (
-    <div className="bg-white dark:bg-medium p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Record Expense</h2>
+    <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold mb-6 text-gray-800">Record Expense</h2>
        {successMessage && (
         <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
           <p>{successMessage}</p>
@@ -47,12 +48,12 @@ const Expenses: React.FC = () => {
       )}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label htmlFor="expenseAccount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Expense Account</label>
+          <label htmlFor="expenseAccount" className="block text-sm font-medium text-gray-700">Expense Account</label>
           <select 
             id="expenseAccount" 
             value={expenseAccountId} 
             onChange={e => setExpenseAccountId(e.target.value)} 
-            className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary" 
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" 
             required
           >
             <option value="">Select an expense head</option>
@@ -62,16 +63,16 @@ const Expenses: React.FC = () => {
           </select>
         </div>
          <div>
-          <label htmlFor="expenseDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Expense Date</label>
-          <input type="date" id="expenseDate" value={expenseDate} onChange={e => setExpenseDate(e.target.value)} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary" required />
+          <label htmlFor="expenseDate" className="block text-sm font-medium text-gray-700">Expense Date</label>
+          <input type="date" id="expenseDate" value={expenseDate} onChange={e => setExpenseDate(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" required />
         </div>
         <div>
-          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes (Optional)</label>
-          <input type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary" />
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Notes (Optional)</label>
+          <input type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" />
         </div>
         <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Amount</label>
-          <input type="number" id="amount" value={amount} onChange={e => setAmount(parseFloat(e.target.value))} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary" min="0.01" step="0.01" required />
+          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Amount</label>
+          <input type="number" id="amount" value={amount} onChange={e => setAmount(parseFloat(e.target.value))} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" min="0.01" step="0.01" required />
         </div>
         <div className="flex justify-end">
           <button type="submit" className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-6 rounded-lg transition duration-300">

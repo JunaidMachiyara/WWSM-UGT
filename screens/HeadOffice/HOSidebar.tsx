@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { HOView } from './HODashboard';
 
@@ -29,13 +30,13 @@ const HOSidebar: React.FC<HOSidebarProps> = ({ activeView, setView }) => {
     { id: 'expenseAccountManagement', label: 'Expense Accounts', icon: <SettingsIcon /> },
   ];
 
-  const baseStyle = "flex items-center px-4 py-3 text-gray-300 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
+  const baseStyle = "flex items-center px-4 py-3 text-gray-600 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
   const activeStyle = "bg-primary-dark text-white font-bold";
 
   return (
-    <aside className="w-64 bg-medium text-white flex flex-col">
-      <div className="h-20 flex items-center justify-center bg-dark">
-        <h2 className="text-2xl font-bold">WWSM_UGT</h2>
+    <aside className="w-64 bg-white text-gray-800 flex flex-col border-r">
+      <div className="h-20 flex items-center justify-center border-b">
+        <h2 className="text-2xl font-bold text-primary">WWSM_UGT</h2>
       </div>
       <nav className="flex-1 px-2 py-4 space-y-2">
         {navItems.map(item => (

@@ -9,8 +9,9 @@ import IncomeStatement from './views/IncomeStatement';
 import Ledgers from './views/Ledgers';
 import ReceiptVoucher from './views/ReceiptVoucher';
 import ReceiveStock from './views/ReceiveStock';
+import CustomerManagement from './views/CustomerManagement';
 
-export type ShopView = 'dashboard' | 'sales' | 'expenses' | 'inventory' | 'reports-income' | 'reports-ledgers' | 'receiptVoucher' | 'receiveStock';
+export type ShopView = 'dashboard' | 'sales' | 'expenses' | 'inventory' | 'reports-income' | 'reports-ledgers' | 'receiptVoucher' | 'receiveStock' | 'customerManagement';
 
 const ShopDashboard: React.FC = () => {
   const [view, setView] = useState<ShopView>('dashboard');
@@ -29,6 +30,8 @@ const ShopDashboard: React.FC = () => {
         return <Expenses />;
       case 'inventory':
         return <Inventory />;
+      case 'customerManagement':
+        return <CustomerManagement />;
       case 'reports-income':
         return <IncomeStatement />;
       case 'reports-ledgers':
@@ -46,6 +49,7 @@ const ShopDashboard: React.FC = () => {
       case 'receiptVoucher': return 'Receipt Voucher';
       case 'expenses': return 'Expenses & Payables';
       case 'inventory': return 'Inventory Management';
+      case 'customerManagement': return 'Customer Management';
       case 'reports-income': return 'Income Statement';
       case 'reports-ledgers': return 'Customer Ledgers';
       default: return 'Dashboard';

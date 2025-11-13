@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../../context/AppContext';
 import { TransactionType } from '../../../types';
@@ -64,8 +65,8 @@ const ReceiptVoucher: React.FC = () => {
     };
 
     return (
-        <div className="bg-white dark:bg-medium p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold mb-6 text-gray-800 dark:text-white">Record Customer Payment</h2>
+        <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold mb-6 text-gray-800">Record Customer Payment</h2>
             {successMessage && (
                 <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
                     <p>{successMessage}</p>
@@ -73,12 +74,12 @@ const ReceiptVoucher: React.FC = () => {
             )}
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                    <label htmlFor="customer" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Customer</label>
+                    <label htmlFor="customer" className="block text-sm font-medium text-gray-700">Customer</label>
                     <select
                         id="customer"
                         value={customerId}
                         onChange={e => setCustomerId(e.target.value)}
-                        className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary"
+                        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary"
                         required
                     >
                         <option value="">Select a customer</option>
@@ -91,8 +92,8 @@ const ReceiptVoucher: React.FC = () => {
                 {customerId && (
                     <div className={`flex items-start p-4 rounded-lg border ${
                         customerBalance > 0 
-                        ? 'bg-orange-50 dark:bg-orange-900/20 border-orange-200 dark:border-orange-700' 
-                        : 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-700'
+                        ? 'bg-orange-50 border-orange-200' 
+                        : 'bg-green-50 border-green-200'
                     }`}>
                         {customerBalance > 0 ? (
                              <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-orange-500 mr-3 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -106,17 +107,17 @@ const ReceiptVoucher: React.FC = () => {
                        
                         <div>
                             <p className={`text-sm font-medium ${
-                                customerBalance > 0 ? 'text-orange-800 dark:text-orange-200' : 'text-green-800 dark:text-green-200'
+                                customerBalance > 0 ? 'text-orange-800' : 'text-green-800'
                             }`}>
                                 {customerBalance > 0 ? 'Outstanding Balance' : 'Account Status'}
                             </p>
                             <p className={`text-2xl font-bold ${
-                                customerBalance > 0 ? 'text-orange-900 dark:text-orange-100' : 'text-green-900 dark:text-green-100'
+                                customerBalance > 0 ? 'text-orange-900' : 'text-green-900'
                             }`}>
                                 ${Math.abs(customerBalance).toFixed(2)}
                             </p>
                              <p className={`text-xs mt-1 ${
-                                customerBalance > 0 ? 'text-orange-700 dark:text-orange-300' : 'text-green-700 dark:text-green-300'
+                                customerBalance > 0 ? 'text-orange-700' : 'text-green-700'
                             }`}>
                                 {customerBalance > 0 ? 'This is the amount the customer currently owes.' : (customerBalance < 0 ? 'This customer has a credit balance.' : 'This account is fully paid.')}
                             </p>
@@ -125,18 +126,18 @@ const ReceiptVoucher: React.FC = () => {
                 )}
 
                 <div>
-                    <label htmlFor="paymentDate" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Payment Date</label>
-                    <input type="date" id="paymentDate" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary" required />
+                    <label htmlFor="paymentDate" className="block text-sm font-medium text-gray-700">Payment Date</label>
+                    <input type="date" id="paymentDate" value={paymentDate} onChange={e => setPaymentDate(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" required />
                 </div>
                 
                 <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Amount Received</label>
-                    <input type="number" id="amount" value={amount} onChange={e => setAmount(parseFloat(e.target.value))} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary" min="0.01" step="0.01" required />
+                    <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Amount Received</label>
+                    <input type="number" id="amount" value={amount} onChange={e => setAmount(parseFloat(e.target.value))} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" min="0.01" step="0.01" required />
                 </div>
 
                 <div>
-                    <label htmlFor="notes" className="block text-sm font-medium text-gray-700 dark:text-gray-300">Notes (Optional)</label>
-                    <input type="text" id="notes" value={notes} onChange={e => setNotes(e.target.value)} className="mt-1 block w-full border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary focus:border-primary" placeholder="e.g., Payment for invoice #123"/>
+                    <label htmlFor="notes" className="block text-sm font-medium text-gray-700">Notes (Optional)</label>
+                    <input type="text" id="notes" value={notes} onChange={e => setNotes(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" placeholder="e.g., Payment for invoice #123"/>
                 </div>
 
                 <div className="flex justify-end">

@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useAppContext } from '../../../context/AppContext';
 import { TransactionType } from '../../../types';
@@ -23,23 +24,23 @@ const Inventory: React.FC = () => {
   });
 
   return (
-    <div className="bg-white dark:bg-medium p-6 rounded-lg shadow-lg">
-      <h3 className="text-xl font-semibold mb-4 text-gray-800 dark:text-white">Current Inventory Status</h3>
+    <div className="bg-white p-6 rounded-lg shadow-lg">
+      <h3 className="text-xl font-semibold mb-4 text-gray-800">Current Inventory Status</h3>
       <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-          <thead className="bg-gray-50 dark:bg-gray-800">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
             <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Product Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase">Stock on Hand</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Product Name</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Stock on Hand</th>
             </tr>
           </thead>
-          <tbody className="bg-white dark:bg-medium divide-y divide-gray-200 dark:divide-gray-700">
+          <tbody className="bg-white divide-y divide-gray-200">
             {inventoryLevels.map(item => (
               <tr key={item.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{item.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">{item.category}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900 dark:text-white">{item.stock} units</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.category}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{item.stock} units</td>
               </tr>
             ))}
           </tbody>

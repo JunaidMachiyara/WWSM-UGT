@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import { useAppContext } from '../../../context/AppContext';
 import { Transaction, TransactionType } from '../../../types';
@@ -50,15 +51,15 @@ const Dashboard: React.FC = () => {
         <DashboardCard title="Net Profit" value={`$${netProfit.toLocaleString()}`} icon={<ProfitIcon />} color="bg-green-500" />
       </div>
 
-      <div className="bg-white dark:bg-medium p-6 rounded-lg shadow-lg">
-        <h3 className="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">Sales by Product</h3>
+      <div className="bg-white p-6 rounded-lg shadow-lg">
+        <h3 className="text-lg font-semibold mb-4 text-gray-700">Sales by Product</h3>
         <div style={{ width: '100%', height: 300 }}>
           <ResponsiveContainer>
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(128, 128, 128, 0.3)"/>
-              <XAxis dataKey="name" stroke="#9CA3AF" />
-              <YAxis stroke="#9CA3AF" />
-              <Tooltip contentStyle={{ backgroundColor: '#374151', border: 'none', borderRadius: '0.5rem' }} labelStyle={{ color: '#F3F4F6' }}/>
+              <XAxis dataKey="name" stroke="#6B7280" />
+              <YAxis stroke="#6B7280" />
+              <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '0.5rem' }} labelStyle={{ color: '#374151' }}/>
               <Bar dataKey="sales" fill="#8884d8" name="Sales ($)" />
             </BarChart>
           </ResponsiveContainer>

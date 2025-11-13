@@ -28,17 +28,17 @@ const ShopPerformanceChart: React.FC<ChartProps> = ({ transactions, shops }) => 
     });
 
   return (
-    <div className="bg-white dark:bg-medium p-6 rounded-lg shadow-lg">
-       <h3 className="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-200">Shop Performance Overview</h3>
+    <div className="bg-white p-6 rounded-lg shadow-lg">
+       <h3 className="text-lg font-semibold mb-4 text-gray-700">Shop Performance Overview</h3>
        <div style={{ width: '100%', height: 300 }}>
         <ResponsiveContainer>
             <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(128, 128, 128, 0.3)"/>
-            <XAxis dataKey="name" stroke="#9CA3AF"/>
-            <YAxis stroke="#9CA3AF"/>
+            <XAxis dataKey="name" stroke="#6B7280"/>
+            <YAxis stroke="#6B7280"/>
             <Tooltip
-                contentStyle={{ backgroundColor: '#374151', border: 'none', borderRadius: '0.5rem' }}
-                labelStyle={{ color: '#F3F4F6' }}
+                contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '0.5rem' }}
+                labelStyle={{ color: '#374151' }}
             />
             <Legend />
             <Bar dataKey="sales" fill="#82ca9d" name="Total Sales" />

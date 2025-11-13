@@ -61,6 +61,7 @@ interface AppContextType {
   addExpense: (expense: { shopId: string, expenseAccountId: string, description: string, amount: number, date: Date }) => void;
   addExport: (data: AddExportPayload) => void;
   customers: Customer[];
+  addCustomer: (customer: Omit<Customer, 'id'>) => void;
   clearingAgents: ClearingAgent[];
   addClearingAgent: (agent: Omit<ClearingAgent, 'id'>) => void;
   freightForwarders: FreightForwarder[];
@@ -153,6 +154,10 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const addUser = async (user: Omit<User, 'id'>) => {
     await addDoc(collection(db, 'users'), user);
+  };
+
+  const addCustomer = async (customer: Omit<Customer, 'id'>) => {
+    await addDoc(collection(db, 'customers'), customer);
   };
 
   const recordSale = async (sale: RecordSalePayload & { date: Date }) => {
@@ -351,7 +356,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
 
   const value = {
     role, setRole, shopId, setShopId, shops, addShop, products, addProduct,
-    users, addUser, transactions, recordSale, recordPayment, addExpense, addExport, customers,
+    users, addUser, transactions, recordSale, recordPayment, addExpense, addExport, customers, addCustomer,
     clearingAgents, addClearingAgent, freightForwarders, addFreightForwarder,
     customExpenseTypes, addCustomExpenseType, expenseAccounts, addExpenseAccount,
     shipments, receiveShipment

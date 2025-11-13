@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ShopView } from './ShopDashboard';
 import { useAppContext } from '../../context/AppContext';
@@ -11,6 +12,8 @@ const ExpenseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6
 const InventoryIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>;
 const ReportIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;
 const ChevronDownIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>;
+const UsersIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.124-1.282-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.124-1.282.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>;
+
 
 interface ShopSidebarProps {
   activeView: ShopView;
@@ -37,6 +40,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ activeView, setView }) => {
     { id: 'receiptVoucher', label: 'Receipt Voucher', icon: <ReceiptIcon /> },
     { id: 'expenses', label: 'Record Expenses', icon: <ExpenseIcon /> },
     { id: 'inventory', label: 'Inventory', icon: <InventoryIcon /> },
+    { id: 'customerManagement', label: 'Customers', icon: <UsersIcon /> },
   ];
   
   const reportItems = [
@@ -44,16 +48,16 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ activeView, setView }) => {
       { id: 'reports-ledgers' as ShopView, label: 'Ledgers' },
   ];
 
-  const baseStyle = "flex items-center px-4 py-3 text-gray-300 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
+  const baseStyle = "flex items-center px-4 py-3 text-gray-600 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
   const activeStyle = "bg-primary-dark text-white font-bold";
-  const subMenuStyle = "flex items-center pl-12 pr-4 py-2 text-sm text-gray-400 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
+  const subMenuStyle = "flex items-center pl-12 pr-4 py-2 text-sm text-gray-500 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
   const activeSubMenuStyle = "bg-primary text-white font-semibold";
 
   return (
-    <aside className="w-64 bg-medium text-white flex flex-col">
-      <div className="h-20 flex flex-col items-center justify-center bg-dark text-center px-2">
-        <h2 className="text-xl font-bold">WWSM_UGT</h2>
-        <p className="text-sm text-gray-400 truncate">{currentShop?.name}</p>
+    <aside className="w-64 bg-white text-gray-800 flex flex-col border-r">
+      <div className="h-20 flex flex-col items-center justify-center border-b text-center px-2">
+        <h2 className="text-xl font-bold text-primary">WWSM_UGT</h2>
+        <p className="text-sm text-gray-500 truncate">{currentShop?.name}</p>
       </div>
       <nav className="flex-1 px-2 py-4 space-y-2">
         {navItems.map(item => (
@@ -81,7 +85,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ activeView, setView }) => {
                 </div>
             </div>
             {reportsOpen && (
-                <div className="py-1 bg-gray-700/20">
+                <div className="py-1 bg-gray-50">
                     {reportItems.map(item => (
                         <a
                             key={item.id}

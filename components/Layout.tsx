@@ -20,13 +20,13 @@ const Layout: React.FC<LayoutProps> = ({ sidebar, children, title }) => {
   const currentShopName = role === UserRole.SHOP_OPERATOR ? shops.find(s => s.id === shopId)?.name : 'All Shops';
 
   return (
-    <div className="flex h-screen bg-gray-100 dark:bg-dark text-gray-800 dark:text-gray-200">
+    <div className="flex h-screen bg-gray-100 text-gray-800">
       {sidebar}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="flex justify-between items-center p-4 bg-white dark:bg-medium shadow-md">
+        <header className="flex justify-between items-center p-4 bg-white shadow-md">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800 dark:text-white">{title}</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{role === UserRole.HEAD_OFFICE ? 'Head Office View' : `Shop View: ${currentShopName}`}</p>
+            <h1 className="text-2xl font-bold text-gray-800">{title}</h1>
+            <p className="text-sm text-gray-500">{role === UserRole.HEAD_OFFICE ? 'Head Office View' : `Shop View: ${currentShopName}`}</p>
           </div>
           <button
             onClick={handleLogout}
@@ -35,7 +35,7 @@ const Layout: React.FC<LayoutProps> = ({ sidebar, children, title }) => {
             Logout
           </button>
         </header>
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 dark:bg-dark p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-100 p-6">
           {children}
         </main>
       </div>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAppContext } from '../../../context/AppContext';
 import { Shipment, ShipmentStatus } from '../../../types';
@@ -54,37 +55,37 @@ const ReceiveStock: React.FC = () => {
 
     if (selectedShipment) {
         return (
-            <div className="bg-white dark:bg-medium p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
+            <div className="bg-white p-8 rounded-lg shadow-lg max-w-4xl mx-auto">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Receive Shipment #{selectedShipment.id}</h2>
-                    <button onClick={() => setSelectedShipment(null)} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">&larr; Back to List</button>
+                    <h2 className="text-2xl font-bold text-gray-800">Receive Shipment #{selectedShipment.id}</h2>
+                    <button onClick={() => setSelectedShipment(null)} className="text-gray-500 hover:text-gray-700">&larr; Back to List</button>
                 </div>
 
-                <div className="bg-gray-50 dark:bg-gray-700/50 p-4 rounded-lg mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                <div className="bg-gray-50 p-4 rounded-lg mb-6 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                     <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Freight Cost</p>
-                        <p className="font-bold text-lg dark:text-white">${selectedShipment.freightCost.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">Freight Cost</p>
+                        <p className="font-bold text-lg">${selectedShipment.freightCost.toFixed(2)}</p>
                     </div>
                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Clearing Cost</p>
-                        <p className="font-bold text-lg dark:text-white">${selectedShipment.clearingCost.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">Clearing Cost</p>
+                        <p className="font-bold text-lg">${selectedShipment.clearingCost.toFixed(2)}</p>
                     </div>
                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Customs Cost</p>
-                        <p className="font-bold text-lg dark:text-white">${selectedShipment.customExpenseCost.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">Customs Cost</p>
+                        <p className="font-bold text-lg">${selectedShipment.customExpenseCost.toFixed(2)}</p>
                     </div>
                      <div>
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Expected Duty</p>
-                        <p className="font-bold text-lg dark:text-white">${selectedShipment.expectedDuty.toFixed(2)}</p>
+                        <p className="text-sm text-gray-500">Expected Duty</p>
+                        <p className="font-bold text-lg">${selectedShipment.expectedDuty.toFixed(2)}</p>
                     </div>
-                    <div className="col-span-full border-t border-gray-200 dark:border-gray-600 pt-2 mt-2">
-                        <p className="text-sm text-gray-500 dark:text-gray-400">Total Overhead Costs</p>
-                        <p className="font-bold text-xl text-primary dark:text-blue-400">${getTotalOverheads(selectedShipment).toFixed(2)}</p>
+                    <div className="col-span-full border-t border-gray-200 pt-2 mt-2">
+                        <p className="text-sm text-gray-500">Total Overhead Costs</p>
+                        <p className="font-bold text-xl text-primary">${getTotalOverheads(selectedShipment).toFixed(2)}</p>
                     </div>
                 </div>
 
                 <div className="space-y-4">
-                    <div className="grid grid-cols-6 gap-4 font-semibold text-gray-600 dark:text-gray-300 px-4">
+                    <div className="grid grid-cols-6 gap-4 font-semibold text-gray-600 px-4">
                         <div className="col-span-3">Product</div>
                         <div className="text-center">Expected Qty</div>
                         <div className="col-span-2 text-center">Received Qty</div>
@@ -95,16 +96,16 @@ const ReceiveStock: React.FC = () => {
                         const isDiscrepancy = receivedItem && receivedItem.quantity !== item.expectedQuantity;
                         return (
                             <div key={item.productId} className={`grid grid-cols-6 gap-4 items-center p-4 rounded-lg border ${
-                                isDiscrepancy ? 'border-yellow-500 bg-yellow-50 dark:bg-yellow-900/20' : 'border-gray-200 dark:border-gray-700'
+                                isDiscrepancy ? 'border-yellow-500 bg-yellow-50' : 'border-gray-200'
                             }`}>
-                                <div className="col-span-3 font-medium text-gray-800 dark:text-white">{product?.name || 'Unknown Product'}</div>
-                                <div className="text-center text-gray-700 dark:text-gray-300">{item.expectedQuantity}</div>
+                                <div className="col-span-3 font-medium text-gray-800">{product?.name || 'Unknown Product'}</div>
+                                <div className="text-center text-gray-700">{item.expectedQuantity}</div>
                                 <div className="col-span-2">
                                     <input 
                                         type="number" 
                                         value={receivedItem?.quantity || 0}
                                         onChange={e => handleQuantityChange(item.productId, parseInt(e.target.value))}
-                                        className="w-full text-center border border-gray-300 dark:border-gray-600 rounded-md shadow-sm p-2 bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:ring-primary"
+                                        className="w-full text-center border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 focus:outline-none focus:ring-primary"
                                     />
                                 </div>
                             </div>
@@ -122,7 +123,7 @@ const ReceiveStock: React.FC = () => {
 
     return (
         <div className="space-y-6">
-             <h2 className="text-2xl font-bold text-gray-800 dark:text-white">Pending Shipments from Head Office</h2>
+             <h2 className="text-2xl font-bold text-gray-800">Pending Shipments from Head Office</h2>
              {successMessage && (
                 <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6" role="alert">
                     <p>{successMessage}</p>
@@ -130,13 +131,13 @@ const ReceiveStock: React.FC = () => {
             )}
             {pendingShipments.length > 0 ? (
                 pendingShipments.map(shipment => (
-                    <div key={shipment.id} className="bg-white dark:bg-medium p-6 rounded-lg shadow-lg flex justify-between items-center">
+                    <div key={shipment.id} className="bg-white p-6 rounded-lg shadow-lg flex justify-between items-center">
                         <div>
-                            <h3 className="text-lg font-bold text-primary dark:text-blue-400">Shipment #{shipment.id}</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400">
+                            <h3 className="text-lg font-bold text-primary">Shipment #{shipment.id}</h3>
+                            <p className="text-sm text-gray-500">
                                 Sent on: {new Date(shipment.date).toLocaleDateString()}
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                            <p className="text-sm text-gray-600 mt-1">
                                 Contains {shipment.items.length} item types.
                             </p>
                         </div>
@@ -146,8 +147,8 @@ const ReceiveStock: React.FC = () => {
                     </div>
                 ))
             ) : (
-                <div className="bg-white dark:bg-medium p-10 rounded-lg shadow-lg text-center">
-                    <p className="text-gray-500 dark:text-gray-400">There are no pending shipments from the Head Office.</p>
+                <div className="bg-white p-10 rounded-lg shadow-lg text-center">
+                    <p className="text-gray-500">There are no pending shipments from the Head Office.</p>
                 </div>
             )}
         </div>
