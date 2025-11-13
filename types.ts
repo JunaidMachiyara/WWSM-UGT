@@ -61,6 +61,8 @@ export interface Customer {
     id: string;
     name: string;
     shopId: string;
+    phone?: string;
+    reference?: string;
 }
 
 export interface Transaction {

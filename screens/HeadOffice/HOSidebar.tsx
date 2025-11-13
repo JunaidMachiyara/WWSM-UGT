@@ -30,8 +30,9 @@ const HOSidebar: React.FC<HOSidebarProps> = ({ activeView, setView }) => {
     { id: 'expenseAccountManagement', label: 'Expense Accounts', icon: <SettingsIcon /> },
   ];
 
-  const baseStyle = "flex items-center px-4 py-3 text-gray-600 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
+  const baseStyle = "flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer";
   const activeStyle = "bg-primary-dark text-white font-bold";
+  const inactiveStyle = "text-gray-600 hover:bg-primary-dark hover:text-white";
 
   return (
     <aside className="w-64 bg-white text-gray-800 flex flex-col border-r">
@@ -42,7 +43,7 @@ const HOSidebar: React.FC<HOSidebarProps> = ({ activeView, setView }) => {
         {navItems.map(item => (
           <a
             key={item.id}
-            className={`${baseStyle} ${activeView === item.id ? activeStyle : ''}`}
+            className={`${baseStyle} ${activeView === item.id ? activeStyle : inactiveStyle}`}
             onClick={() => setView(item.id as HOView)}
           >
             {item.icon}

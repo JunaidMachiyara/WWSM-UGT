@@ -48,10 +48,13 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ activeView, setView }) => {
       { id: 'reports-ledgers' as ShopView, label: 'Ledgers' },
   ];
 
-  const baseStyle = "flex items-center px-4 py-3 text-gray-600 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
+  const baseStyle = "flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer";
   const activeStyle = "bg-primary-dark text-white font-bold";
-  const subMenuStyle = "flex items-center pl-12 pr-4 py-2 text-sm text-gray-500 hover:bg-primary-dark hover:text-white transition-colors duration-200 cursor-pointer";
+  const inactiveStyle = "text-gray-600 hover:bg-primary-dark hover:text-white";
+
+  const subMenuStyle = "flex items-center pl-12 pr-4 py-2 text-sm transition-colors duration-200 cursor-pointer";
   const activeSubMenuStyle = "bg-primary text-white font-semibold";
+  const inactiveSubMenuStyle = "text-gray-500 hover:bg-primary-dark hover:text-white";
 
   return (
     <aside className="w-64 bg-white text-gray-800 flex flex-col border-r">
@@ -63,7 +66,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ activeView, setView }) => {
         {navItems.map(item => (
           <a
             key={item.id}
-            className={`${baseStyle} ${activeView === item.id ? activeStyle : ''}`}
+            className={`${baseStyle} ${activeView === item.id ? activeStyle : inactiveStyle}`}
             onClick={() => setView(item.id as ShopView)}
           >
             {item.icon}
@@ -73,7 +76,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ activeView, setView }) => {
          {/* Reports collapsible menu */}
         <div>
             <div
-                className={`${baseStyle} justify-between ${isReportsActive ? activeStyle : ''}`}
+                className={`${baseStyle} justify-between ${isReportsActive ? activeStyle : inactiveStyle}`}
                 onClick={() => setReportsOpen(!reportsOpen)}
             >
                 <div className="flex items-center">
@@ -89,7 +92,7 @@ const ShopSidebar: React.FC<ShopSidebarProps> = ({ activeView, setView }) => {
                     {reportItems.map(item => (
                         <a
                             key={item.id}
-                            className={`${subMenuStyle} ${activeView === item.id ? activeSubMenuStyle : ''}`}
+                            className={`${subMenuStyle} ${activeView === item.id ? activeSubMenuStyle : inactiveSubMenuStyle}`}
                             onClick={() => setView(item.id)}
                         >
                             {item.label}
