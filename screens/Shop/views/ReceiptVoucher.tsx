@@ -4,13 +4,13 @@ import { useAppContext } from '../../../context/AppContext';
 import { TransactionType } from '../../../types';
 
 const ReceiptVoucher: React.FC = () => {
-    const { shopId, customers, transactions, recordPayment } = useAppContext();
+    const { shopId, customers, transactions, recordPayment, formatCurrency, currentShopCurrency } = useAppContext();
     const [customerId, setCustomerId] = useState('');
     const [amount, setAmount] = useState(0);
     const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
     const [notes, setNotes] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
-    const [customerBalance, setCustomerBalance] = useState(0);
+    const [customerBalance, setCustomerBalance] = useState(0); // Stored in base currency
 
     const shopCustomers = customers.filter(c => c.shopId === shopId);
     
@@ -39,8 +39,9 @@ const ReceiptVoucher: React.FC = () => {
             return;
         }
 
-        if (amount > customerBalance) {
-            alert(`Payment amount ($${amount.toFixed(2)}) cannot be greater than the outstanding balance ($${customerBalance.toFixed(2)}).`);
+        const localCustomerBalance = customerBalance * currentShopCurrency.rate;
+        if (amount > localCustomerBalance) {
+            alert(`Payment amount (${formatCurrency(amount / currentShopCurrency.rate)}) cannot be greater than the outstanding balance (${formatCurrency(customerBalance)}).`);
             return;
         }
 
@@ -49,13 +50,13 @@ const ReceiptVoucher: React.FC = () => {
         recordPayment({
             shopId,
             customerId,
-            amount,
+            amount, // Sent in local currency, context will convert it
             date: dateForTransaction,
             notes,
         });
 
         const customerName = customers.find(c => c.id === customerId)?.name || '';
-        setSuccessMessage(`Payment of $${amount} from "${customerName}" recorded successfully.`);
+        setSuccessMessage(`Payment of ${formatCurrency(amount / currentShopCurrency.rate)} from "${customerName}" recorded successfully.`);
 
         setCustomerId('');
         setAmount(0);
@@ -114,7 +115,7 @@ const ReceiptVoucher: React.FC = () => {
                             <p className={`text-2xl font-bold ${
                                 customerBalance > 0 ? 'text-orange-900' : 'text-green-900'
                             }`}>
-                                ${Math.abs(customerBalance).toFixed(2)}
+                                {formatCurrency(Math.abs(customerBalance))}
                             </p>
                              <p className={`text-xs mt-1 ${
                                 customerBalance > 0 ? 'text-orange-700' : 'text-green-700'
@@ -131,7 +132,7 @@ const ReceiptVoucher: React.FC = () => {
                 </div>
                 
                 <div>
-                    <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Amount Received</label>
+                    <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Amount Received ({currentShopCurrency.symbol})</label>
                     <input type="number" id="amount" value={amount} onChange={e => setAmount(parseFloat(e.target.value))} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" min="0.01" step="0.01" required />
                 </div>
 

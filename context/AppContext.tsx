@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
+import React, { createContext, useState, useContext, ReactNode, useEffect, useMemo } from 'react';
 import { db } from '../firebase';
 import {
   collection,
@@ -9,11 +9,12 @@ import {
   updateDoc,
   writeBatch,
   Timestamp,
+  setDoc,
 } from 'firebase/firestore';
 import { 
   UserRole, Shop, Product, User, Transaction, Customer, TransactionType,
   ClearingAgent, FreightForwarder, CustomExpenseType, ExpenseAccount,
-  Shipment, ShipmentStatus, ShipmentItem
+  Shipment, ShipmentStatus, Currency
 } from '../types';
 
 export interface ExportItem {
@@ -72,6 +73,10 @@ interface AppContextType {
   addExpenseAccount: (account: Omit<ExpenseAccount, 'id'>) => void;
   shipments: Shipment[];
   receiveShipment: (payload: { shipmentId: string; receivedItems: { productId: string; quantity: number }[] }) => void;
+  currencies: Currency[];
+  updateCurrency: (currency: Pick<Currency, 'id' | 'rate'>) => void;
+  currentShopCurrency: Currency;
+  formatCurrency: (amountInBase: number) => string;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -89,6 +94,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [customExpenseTypes, setCustomExpenseTypes] = useState<CustomExpenseType[]>([]);
   const [expenseAccounts, setExpenseAccounts] = useState<ExpenseAccount[]>([]);
   const [shipments, setShipments] = useState<Shipment[]>([]);
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
 
   useEffect(() => {
     const collections: { name: string; setter: Function }[] = [
@@ -136,13 +142,69 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         });
         setShipments(data as Shipment[]);
     });
+
+    const qCurrencies = query(collection(db, 'currencies'));
+    const unsubCurrencies = onSnapshot(qCurrencies, (snapshot) => {
+        if (snapshot.empty) {
+            // Seed data for demo purposes if collection is empty
+            const initialCurrencies: Currency[] = [
+                { id: 'USD', name: 'US Dollar', symbol: '$', rate: 1 },
+                { id: 'UGX', name: 'Ugandan Shilling', symbol: 'UGX ', rate: 3850 },
+                { id: 'KES', name: 'Kenyan Shilling', symbol: 'KSh ', rate: 132 },
+                { id: 'EUR', name: 'Euro', symbol: '€', rate: 0.93 },
+            ];
+            const batch = writeBatch(db);
+            initialCurrencies.forEach(currency => {
+                const docRef = doc(db, "currencies", currency.id);
+                batch.set(docRef, currency);
+            });
+            batch.commit();
+            setCurrencies(initialCurrencies);
+        } else {
+            const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Currency));
+            setCurrencies(data);
+        }
+    });
   
     return () => {
       unsubscribes.forEach(unsub => unsub());
       unsubTransactions();
       unsubShipments();
+      unsubCurrencies();
     };
   }, []);
+
+    const currentShopCurrency = useMemo(() => {
+        const defaultCurrency = { id: 'USD', name: 'US Dollar', symbol: '$', rate: 1 };
+        if (role === UserRole.SHOP_OPERATOR && shopId) {
+            const currentShop = shops.find(s => s.id === shopId);
+            if (currentShop && currentShop.currencyCode) {
+                return currencies.find(c => c.id === currentShop.currencyCode) || defaultCurrency;
+            }
+        }
+        // For HO or if shop has no currency set, default to USD
+        return currencies.find(c => c.id === 'USD') || defaultCurrency;
+  }, [role, shopId, shops, currencies]);
+
+  const convertToUSD = (localAmount: number) => {
+    if (!currentShopCurrency || currentShopCurrency.rate === 0 || currentShopCurrency.id === 'USD') {
+        return localAmount;
+    }
+    return localAmount / currentShopCurrency.rate;
+  };
+  
+  const formatCurrency = (amountInBase: number): string => {
+    const localAmount = amountInBase * (currentShopCurrency?.rate || 1);
+    try {
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: currentShopCurrency?.id || 'USD',
+        }).format(localAmount);
+    } catch (e) {
+        return `${currentShopCurrency?.symbol || '$'}${localAmount.toFixed(2)}`;
+    }
+  };
+
 
   const addShop = async (shop: Omit<Shop, 'id'>) => {
     await addDoc(collection(db, 'shops'), shop);
@@ -164,13 +226,21 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     const batch = writeBatch(db);
     const saleDate = sale.date;
     const invoiceId = `inv-${saleDate.getTime()}`;
-    const totalAmount = sale.items.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
     
-    const isFullCashSale = sale.cashPaid >= totalAmount;
+    // Convert amounts from local currency to base USD for storage
+    const convertedItems = sale.items.map(item => ({
+        ...item,
+        salePrice: convertToUSD(item.salePrice)
+    }));
+    const convertedCashPaid = convertToUSD(sale.cashPaid);
+    
+    const totalAmount = convertedItems.reduce((sum, item) => sum + (item.salePrice * item.quantity), 0);
+    
+    const isFullCashSale = convertedCashPaid >= totalAmount;
     const saleType = isFullCashSale ? TransactionType.CASH_SALE : TransactionType.CREDIT_SALE;
     const description = isFullCashSale ? 'Cash Sale' : 'Credit Sale';
 
-    sale.items.forEach(item => {
+    convertedItems.forEach(item => {
         const product = products.find(p => p.id === item.productId);
         if (product) {
             const transRef = doc(collection(db, 'transactions'));
@@ -188,14 +258,14 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         }
     });
 
-    if (sale.cashPaid > 0) {
+    if (convertedCashPaid > 0) {
         const receiptRef = doc(collection(db, 'transactions'));
         batch.set(receiptRef, {
             shopId: sale.shopId,
             invoiceId,
             type: TransactionType.SALES_RECEIPT,
             description: `Payment for invoice ${invoiceId}`,
-            amount: sale.cashPaid,
+            amount: convertedCashPaid,
             customerId: sale.customerId,
             date: Timestamp.fromDate(saleDate),
         });
@@ -204,23 +274,25 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   };
 
   const recordPayment = async (payload: { shopId: string; customerId: string; amount: number; date: Date; notes?: string }) => {
+    const convertedAmount = convertToUSD(payload.amount);
     await addDoc(collection(db, 'transactions'), {
       shopId: payload.shopId,
       customerId: payload.customerId,
       type: TransactionType.SALES_RECEIPT,
       description: payload.notes || `Payment received from customer`,
-      amount: payload.amount,
+      amount: convertedAmount,
       date: Timestamp.fromDate(payload.date),
     });
   };
 
   const addExpense = async (expense: { shopId: string, expenseAccountId: string, description: string, amount: number, date: Date }) => {
+    const convertedAmount = convertToUSD(expense.amount);
     await addDoc(collection(db, 'transactions'), {
       shopId: expense.shopId,
       type: TransactionType.EXPENSE,
       expenseAccountId: expense.expenseAccountId,
       description: expense.description,
-      amount: expense.amount,
+      amount: convertedAmount,
       date: Timestamp.fromDate(expense.date),
     });
   };
@@ -231,9 +303,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     
     // 1. Create Shipment
     const shipmentRef = doc(collection(db, 'shipments'));
-    const newShipment: Omit<Shipment, 'id'> = {
+    const newShipment: Omit<Shipment, 'id' | 'date'> = {
       shopId: data.shopId,
-      date: now.toDate(), // For immediate client-side display, will be converted to TS
       status: ShipmentStatus.PENDING,
       items: data.items.map(item => ({
         productId: item.productId,
@@ -354,12 +425,17 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     await addDoc(collection(db, 'expenseAccounts'), account);
   };
 
+  const updateCurrency = async (currency: Pick<Currency, 'id' | 'rate'>) => {
+    const currencyRef = doc(db, 'currencies', currency.id);
+    await updateDoc(currencyRef, { rate: currency.rate });
+  };
+
   const value = {
     role, setRole, shopId, setShopId, shops, addShop, products, addProduct,
     users, addUser, transactions, recordSale, recordPayment, addExpense, addExport, customers, addCustomer,
     clearingAgents, addClearingAgent, freightForwarders, addFreightForwarder,
     customExpenseTypes, addCustomExpenseType, expenseAccounts, addExpenseAccount,
-    shipments, receiveShipment
+    shipments, receiveShipment, currencies, updateCurrency, currentShopCurrency, formatCurrency
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

@@ -11,8 +11,9 @@ import ClearingAgentSetup from './views/ClearingAgentSetup';
 import FreightForwarderSetup from './views/FreightForwarderSetup';
 import CustomExpenseSetup from './views/CustomExpenseSetup';
 import ExpenseAccountManagement from './views/ExpenseAccountManagement';
+import CurrencyManagement from './views/CurrencyManagement';
 
-export type HOView = 'dashboard' | 'shopManagement' | 'userManagement' | 'itemManagement' | 'performanceAnalysis' | 'exportManagement' | 'clearingAgentSetup' | 'freightForwarderSetup' | 'customExpenseSetup' | 'expenseAccountManagement';
+export type HOView = 'dashboard' | 'shopManagement' | 'userManagement' | 'itemManagement' | 'performanceAnalysis' | 'exportManagement' | 'clearingAgentSetup' | 'freightForwarderSetup' | 'customExpenseSetup' | 'expenseAccountManagement' | 'currencyManagement';
 
 const HODashboard: React.FC = () => {
   const [view, setView] = useState<HOView>('dashboard');
@@ -39,6 +40,8 @@ const HODashboard: React.FC = () => {
         return <CustomExpenseSetup />;
       case 'expenseAccountManagement':
         return <ExpenseAccountManagement />;
+      case 'currencyManagement':
+        return <CurrencyManagement />;
       default:
         return <Dashboard />;
     }
@@ -56,6 +59,7 @@ const HODashboard: React.FC = () => {
       case 'freightForwarderSetup': return 'Freight Forwarder Setup';
       case 'customExpenseSetup': return 'Custom Expense Setup';
       case 'expenseAccountManagement': return 'Expense Account Management';
+      case 'currencyManagement': return 'Currency Management';
       default: return 'Dashboard';
     }
   };

@@ -5,7 +5,7 @@ import { useAppContext } from '../../../context/AppContext';
 import { TransactionType } from '../../../types';
 
 const Ledgers: React.FC = () => {
-    const { customers, transactions, shopId } = useAppContext();
+    const { customers, transactions, shopId, formatCurrency } = useAppContext();
     const [selectedCustomerId, setSelectedCustomerId] = useState<string>('');
 
     const shopCustomers = customers.filter(c => c.shopId === shopId);
@@ -81,9 +81,9 @@ const Ledgers: React.FC = () => {
                                 <tr>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Debit ($)</th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Credit ($)</th>
-                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Balance ($)</th>
+                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Debit</th>
+                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Credit</th>
+                                    <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Balance</th>
                                 </tr>
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
@@ -91,9 +91,9 @@ const Ledgers: React.FC = () => {
                                     <tr key={index}>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(entry.date).toLocaleDateString()}</td>
                                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.description}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600">{entry.debit > 0 ? entry.debit.toFixed(2) : '-'}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600">{entry.credit > 0 ? entry.credit.toFixed(2) : '-'}</td>
-                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold text-gray-900">{entry.balance.toFixed(2)}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-red-600">{entry.debit > 0 ? formatCurrency(entry.debit) : '-'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-green-600">{entry.credit > 0 ? formatCurrency(entry.credit) : '-'}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold text-gray-900">{formatCurrency(entry.balance)}</td>
                                     </tr>
                                 )) : (
                                     <tr>
@@ -105,7 +105,7 @@ const Ledgers: React.FC = () => {
                     </div>
                     <div className="text-right mt-4 p-4 bg-gray-50 rounded-lg">
                         <span className="text-lg font-bold text-gray-800">Final Balance: </span>
-                        <span className={`text-lg font-bold ${runningBalance >= 0 ? 'text-primary' : 'text-red-500'}`}>${runningBalance.toFixed(2)}</span>
+                        <span className={`text-lg font-bold ${runningBalance >= 0 ? 'text-primary' : 'text-red-500'}`}>{formatCurrency(runningBalance)}</span>
                     </div>
                 </div>
             )}

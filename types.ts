@@ -16,6 +16,13 @@ export enum ShipmentStatus {
   RECEIVED = 'RECEIVED',
 }
 
+export interface Currency {
+  id: string; // e.g., "USD"
+  name: string; // e.g., "United States Dollar"
+  symbol: string; // e.g., "$"
+  rate: number; // Conversion rate from base currency (USD). USD rate is 1.
+}
+
 export interface ShipmentItem {
     productId: string;
     expectedQuantity: number;
@@ -40,6 +47,7 @@ export interface Shop {
   name: string;
   location: string;
   isActive: boolean;
+  currencyCode: string; // e.g., "USD", "EUR", "UGX"
 }
 
 export interface Product {
@@ -66,7 +74,7 @@ export interface Customer {
 }
 
 export interface Transaction {
-  id: string;
+  id:string;
   shopId: string;
   invoiceId?: string;
   productId?: string;

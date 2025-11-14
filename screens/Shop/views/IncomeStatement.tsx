@@ -5,7 +5,7 @@ import { useAppContext } from '../../../context/AppContext';
 import { TransactionType } from '../../../types';
 
 const IncomeStatement: React.FC = () => {
-    const { transactions, shopId, products } = useAppContext();
+    const { transactions, shopId, products, formatCurrency } = useAppContext();
     const shopTransactions = transactions.filter(t => t.shopId === shopId);
 
     const totalSales = shopTransactions.filter(t => t.type === TransactionType.CASH_SALE || t.type === TransactionType.CREDIT_SALE).reduce((sum, t) => sum + t.amount * (t.quantity || 1), 0);
@@ -32,23 +32,23 @@ const IncomeStatement: React.FC = () => {
           <dl className="-my-4 text-sm divide-y divide-gray-200">
             <div className="py-4 sm:flex sm:items-center sm:justify-between">
               <dt className="font-medium text-gray-900">Total Revenue (Sales)</dt>
-              <dd className="mt-1 font-medium text-green-600 sm:mt-0">{`$${totalSales.toFixed(2)}`}</dd>
+              <dd className="mt-1 font-medium text-green-600 sm:mt-0">{formatCurrency(totalSales)}</dd>
             </div>
             <div className="py-4 sm:flex sm:items-center sm:justify-between">
               <dt className="text-gray-600">Cost of Goods Sold (COGS)</dt>
-              <dd className="mt-1 font-medium text-red-600 sm:mt-0">{`($${totalCostOfGoods.toFixed(2)})`}</dd>
+              <dd className="mt-1 font-medium text-red-600 sm:mt-0">({formatCurrency(totalCostOfGoods)})</dd>
             </div>
             <div className="py-4 sm:flex sm:items-center sm:justify-between font-bold">
               <dt className="text-gray-900">Gross Profit</dt>
-              <dd className="mt-1 text-gray-900 sm:mt-0">{`$${grossProfit.toFixed(2)}`}</dd>
+              <dd className="mt-1 text-gray-900 sm:mt-0">{formatCurrency(grossProfit)}</dd>
             </div>
              <div className="py-4 sm:flex sm:items-center sm:justify-between">
               <dt className="text-gray-600">Operating Expenses</dt>
-              <dd className="mt-1 font-medium text-red-600 sm:mt-0">{`($${totalExpenses.toFixed(2)})`}</dd>
+              <dd className="mt-1 font-medium text-red-600 sm:mt-0">({formatCurrency(totalExpenses)})</dd>
             </div>
             <div className="py-4 sm:flex sm:items-center sm:justify-between text-lg font-bold">
               <dt className="text-primary">Net Profit</dt>
-              <dd className="mt-1 text-primary sm:mt-0">{`$${netProfit.toFixed(2)}`}</dd>
+              <dd className="mt-1 text-primary sm:mt-0">{formatCurrency(netProfit)}</dd>
             </div>
           </dl>
         </div>

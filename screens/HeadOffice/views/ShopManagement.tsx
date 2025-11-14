@@ -4,16 +4,18 @@ import React, { useState } from 'react';
 import { useAppContext } from '../../../context/AppContext';
 
 const ShopManagement: React.FC = () => {
-  const { shops, addShop } = useAppContext();
+  const { shops, addShop, currencies } = useAppContext();
   const [name, setName] = useState('');
   const [location, setLocation] = useState('');
+  const [currencyCode, setCurrencyCode] = useState('USD');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if(!name || !location) return;
-    addShop({ name, location, isActive: true });
+    if(!name || !location || !currencyCode) return;
+    addShop({ name, location, isActive: true, currencyCode });
     setName('');
     setLocation('');
+    setCurrencyCode('USD');
   };
 
   return (
@@ -29,6 +31,14 @@ const ShopManagement: React.FC = () => {
             <label htmlFor="shopLocation" className="block text-sm font-medium text-gray-700">Location</label>
             <input type="text" id="shopLocation" value={location} onChange={e => setLocation(e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 focus:outline-none focus:ring-primary" required />
           </div>
+          <div>
+            <label htmlFor="shopCurrency" className="block text-sm font-medium text-gray-700">Currency</label>
+            <select id="shopCurrency" value={currencyCode} onChange={e => setCurrencyCode(e.target.value)} className="mt-1 w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 focus:outline-none focus:ring-primary" required>
+              {currencies.map(currency => (
+                <option key={currency.id} value={currency.id}>{currency.id} - {currency.name}</option>
+              ))}
+            </select>
+          </div>
           <button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg">Add Shop</button>
         </form>
       </div>
@@ -40,6 +50,7 @@ const ShopManagement: React.FC = () => {
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Currency</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
               </tr>
             </thead>
@@ -48,6 +59,7 @@ const ShopManagement: React.FC = () => {
                 <tr key={shop.id}>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{shop.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{shop.location}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{shop.currencyCode}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${shop.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
                       {shop.isActive ? 'Active' : 'Inactive'}

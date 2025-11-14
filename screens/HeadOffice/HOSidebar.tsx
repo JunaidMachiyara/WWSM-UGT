@@ -28,6 +28,7 @@ const HOSidebar: React.FC<HOSidebarProps> = ({ activeView, setView }) => {
     { id: 'freightForwarderSetup', label: 'Freight Forwarders', icon: <SettingsIcon /> },
     { id: 'customExpenseSetup', label: 'Custom Expenses', icon: <SettingsIcon /> },
     { id: 'expenseAccountManagement', label: 'Expense Accounts', icon: <SettingsIcon /> },
+    { id: 'currencyManagement', label: 'Currency Rates', icon: <SettingsIcon /> },
   ];
 
   const baseStyle = "flex items-center px-4 py-3 transition-colors duration-200 cursor-pointer";

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useAppContext } from '../../../context/AppContext';
 
 const Expenses: React.FC = () => {
-  const { shopId, addExpense, expenseAccounts } = useAppContext();
+  const { shopId, addExpense, expenseAccounts, currentShopCurrency } = useAppContext();
   const [expenseAccountId, setExpenseAccountId] = useState('');
   const [description, setDescription] = useState(''); // For notes
   const [amount, setAmount] = useState(0);
@@ -29,7 +29,7 @@ const Expenses: React.FC = () => {
     });
     
     const expenseName = expenseAccounts.find(ea => ea.id === expenseAccountId)?.name || '';
-    setSuccessMessage(`Expense of $${amount} for "${expenseName}" recorded successfully.`);
+    setSuccessMessage(`Expense of ${currentShopCurrency.symbol}${amount} for "${expenseName}" recorded successfully.`);
     
     setExpenseAccountId('');
     setDescription('');
@@ -71,7 +71,7 @@ const Expenses: React.FC = () => {
           <input type="text" id="description" value={description} onChange={e => setDescription(e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" />
         </div>
         <div>
-          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Amount</label>
+          <label htmlFor="amount" className="block text-sm font-medium text-gray-700">Amount ({currentShopCurrency.symbol})</label>
           <input type="number" id="amount" value={amount} onChange={e => setAmount(parseFloat(e.target.value))} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white text-gray-900 focus:outline-none focus:ring-primary focus:border-primary" min="0.01" step="0.01" required />
         </div>
         <div className="flex justify-end">

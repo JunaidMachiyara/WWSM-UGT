@@ -10,7 +10,7 @@ interface InvoiceItem extends SaleItem {
 }
 
 const Sales: React.FC = () => {
-  const { shopId, products, recordSale, customers, transactions } = useAppContext();
+  const { shopId, products, recordSale, customers, transactions, currentShopCurrency } = useAppContext();
   
   const [items, setItems] = useState<InvoiceItem[]>([{ productId: '', quantity: 1, salePrice: 0, stock: 0, minSalePrice: 0 }]);
   const [customerId, setCustomerId] = useState('');
@@ -45,7 +45,10 @@ const Sales: React.FC = () => {
         item.productId = newProductId;
         item.stock = getStockLevel(newProductId);
         const product = products.find(p => p.id === newProductId);
-        item.minSalePrice = product?.minSalePrice;
+        // minSalePrice is in USD, convert it for display check
+        if(product) {
+            item.minSalePrice = product.minSalePrice * (currentShopCurrency.rate || 1);
+        }
     } else if (field === 'quantity' || field === 'salePrice') {
         (item as any)[field] = Number(value) < 0 ? 0 : Number(value);
     }
@@ -91,7 +94,7 @@ const Sales: React.FC = () => {
       return;
     }
      if (cashPaid > totalAmount) {
-      alert(`Cash paid cannot exceed the total amount of $${totalAmount.toFixed(2)}.`);
+      alert(`Cash paid cannot exceed the total amount of ${currentShopCurrency.symbol}${totalAmount.toFixed(2)}.`);
       return;
     }
 
@@ -165,15 +168,15 @@ const Sales: React.FC = () => {
                   )}
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700">Sale Price/Unit</label>
+                  <label className="block text-sm font-medium text-gray-700">Sale Price/Unit ({currentShopCurrency.symbol})</label>
                   <input type="number" placeholder="Price" value={item.salePrice} onChange={e => handleItemChange(index, 'salePrice', e.target.value)} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 focus:outline-none focus:ring-primary" min="0.01" step="0.01" required />
                   {item.salePrice > 0 && item.minSalePrice && item.salePrice < item.minSalePrice && (
-                      <p className="text-xs text-yellow-500 mt-1">Below min price (${item.minSalePrice.toFixed(2)})</p>
+                      <p className="text-xs text-yellow-500 mt-1">Below min price ({currentShopCurrency.symbol}{item.minSalePrice.toFixed(2)})</p>
                   )}
                 </div>
                 <div className="md:col-span-1 text-right">
                     <label className="block text-sm font-medium text-gray-700">Total</label>
-                    <p className="mt-1 p-2 font-semibold">${((item.quantity || 1) * (item.salePrice || 0)).toFixed(2)}</p>
+                    <p className="mt-1 p-2 font-semibold">{currentShopCurrency.symbol}{((item.quantity || 1) * (item.salePrice || 0)).toFixed(2)}</p>
                 </div>
                 <div className="md:col-span-1">
                   <label className="block text-sm font-medium text-transparent hidden md:block">&nbsp;</label>
@@ -190,15 +193,15 @@ const Sales: React.FC = () => {
             <div className="space-y-4">
                 <div className="flex justify-between items-center text-xl font-bold">
                     <span className="text-gray-800">Total Invoice Amount:</span>
-                    <span className="text-primary">${totalAmount.toFixed(2)}</span>
+                    <span className="text-primary">{currentShopCurrency.symbol}{totalAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                    <label htmlFor="cashPaid" className="text-gray-700 font-medium">Amount Paid (Cash):</label>
+                    <label htmlFor="cashPaid" className="text-gray-700 font-medium">Amount Paid ({currentShopCurrency.symbol}):</label>
                     <input type="number" id="cashPaid" value={cashPaid} onChange={e => setCashPaid(parseFloat(e.target.value) || 0)} className="w-1/3 text-right border border-gray-300 rounded-md shadow-sm p-2 bg-white text-gray-900 focus:outline-none focus:ring-primary" min="0" step="0.01" />
                 </div>
                 <div className="flex justify-between items-center text-lg font-semibold">
                      <span className="text-gray-600">Amount on Credit:</span>
-                    <span className="text-red-500">${creditAmount > 0 ? creditAmount.toFixed(2) : '0.00'}</span>
+                    <span className="text-red-500">{currentShopCurrency.symbol}{creditAmount > 0 ? creditAmount.toFixed(2) : '0.00'}</span>
                 </div>
             </div>
         </div>

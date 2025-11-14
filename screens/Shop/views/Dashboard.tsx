@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useAppContext } from '../../../context/AppContext';
-import { Transaction, TransactionType } from '../../../types';
+import { TransactionType } from '../../../types';
 import DashboardCard from '../../../components/DashboardCard';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
@@ -11,16 +11,16 @@ const ExpenseIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6
 const ProfitIcon = () => <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>;
 
 const Dashboard: React.FC = () => {
-  const { transactions, shopId, products } = useAppContext();
+  const { transactions, shopId, products, formatCurrency, currentShopCurrency } = useAppContext();
   const shopTransactions = transactions.filter(t => t.shopId === shopId);
 
-  // FIX: Calculate total sales by multiplying amount by quantity.
+  // All calculations are in base currency (USD)
   const totalSales = shopTransactions.filter(t => t.type === TransactionType.CASH_SALE || t.type === TransactionType.CREDIT_SALE).reduce((sum, t) => sum + (t.amount * (t.quantity || 1)), 0);
   const totalExpenses = shopTransactions.filter(t => t.type === TransactionType.EXPENSE).reduce((sum, t) => sum + t.amount, 0);
 
   const salesTransactions = shopTransactions.filter(t => t.type === TransactionType.CASH_SALE || t.type === TransactionType.CREDIT_SALE);
   let totalCostOfGoods = 0;
-  // FIX: Use product's hoCost for accurate cost of goods calculation.
+  
   salesTransactions.forEach(sale => {
       const product = products.find(p => p.id === sale.productId);
       if(product) {
@@ -31,7 +31,6 @@ const Dashboard: React.FC = () => {
   const netProfit = totalSales - totalCostOfGoods - totalExpenses;
 
   // Data for chart
-  // FIX: Calculate total sales value for each product.
   const salesByProduct = salesTransactions.reduce((acc, curr) => {
     const productName = products.find(p => p.id === curr.productId)?.name || 'Unknown';
     acc[productName] = (acc[productName] || 0) + (curr.amount * (curr.quantity || 1));
@@ -40,15 +39,15 @@ const Dashboard: React.FC = () => {
 
   const chartData = Object.keys(salesByProduct).map(key => ({
     name: key,
-    sales: salesByProduct[key],
+    sales: salesByProduct[key] * (currentShopCurrency?.rate || 1), // Convert data for chart display
   }));
 
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <DashboardCard title="Total Sales" value={`$${totalSales.toLocaleString()}`} icon={<SalesIcon />} color="bg-blue-500" />
-        <DashboardCard title="Total Expenses" value={`$${totalExpenses.toLocaleString()}`} icon={<ExpenseIcon />} color="bg-red-500" />
-        <DashboardCard title="Net Profit" value={`$${netProfit.toLocaleString()}`} icon={<ProfitIcon />} color="bg-green-500" />
+        <DashboardCard title="Total Sales" value={formatCurrency(totalSales)} icon={<SalesIcon />} color="bg-blue-500" />
+        <DashboardCard title="Total Expenses" value={formatCurrency(totalExpenses)} icon={<ExpenseIcon />} color="bg-red-500" />
+        <DashboardCard title="Net Profit" value={formatCurrency(netProfit)} icon={<ProfitIcon />} color="bg-green-500" />
       </div>
 
       <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -58,9 +57,13 @@ const Dashboard: React.FC = () => {
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(128, 128, 128, 0.3)"/>
               <XAxis dataKey="name" stroke="#6B7280" />
-              <YAxis stroke="#6B7280" />
-              <Tooltip contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '0.5rem' }} labelStyle={{ color: '#374151' }}/>
-              <Bar dataKey="sales" fill="#8884d8" name="Sales ($)" />
+              <YAxis stroke="#6B7280" tickFormatter={(tick) => new Intl.NumberFormat('en-US').format(tick)} />
+              <Tooltip 
+                contentStyle={{ backgroundColor: '#fff', border: '1px solid #ccc', borderRadius: '0.5rem' }} 
+                labelStyle={{ color: '#374151' }}
+                formatter={(value: number) => [new Intl.NumberFormat('en-US').format(value), `Sales (${currentShopCurrency.symbol})`]}
+              />
+              <Bar dataKey="sales" fill="#8884d8" name={`Sales (${currentShopCurrency.symbol})`} />
             </BarChart>
           </ResponsiveContainer>
         </div>
